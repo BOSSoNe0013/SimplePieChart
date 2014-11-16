@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="chart_type">
+        <flag name="pie" value="0x00"/>
+        <flag name="donut" value="0x01"/>
+    </attr>
+    <declare-styleable name="PieChartView">
+        <attr name="chart_type" />
+        <attr name="chart_width" format="dimension" />
+        <attr name="chart_height" format="dimension" />
+        <attr name="chart_gap_top" format="dimension" />
+        <attr name="chart_gap_bottom" format="dimension" />
+        <attr name="chart_gap_left" format="dimension" />
+        <attr name="chart_gap_right" format="dimension" />
+    </declare-styleable>
+</resources>

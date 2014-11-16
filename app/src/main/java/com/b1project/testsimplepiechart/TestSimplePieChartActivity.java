@@ -64,6 +64,9 @@ public class TestSimplePieChartActivity extends ActionBarActivity {
         pieChartView.setChartType(PieChartView.CHART_TYPE_DONUT);
         LinearLayout grafContainer = (LinearLayout) findViewById(R.id.grafContainer);
         grafContainer.addView(pieChartView);
+        
+        PieChartView pieChartViewXml = (PieChartView) findViewById(R.id.myChart);
+        pieChartViewXml.setData(pieData);
     }
 
 
