@@ -20,6 +20,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Shader;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -91,7 +92,9 @@ public class PieChartView extends View {
 
         mShadowPaint.setColor(0xFF101010);
         mShadowPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
-        setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
+        }
     }
 
 	@SuppressLint("DrawAllocation")
