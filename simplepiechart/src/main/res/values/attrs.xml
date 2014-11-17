@@ -8,6 +8,7 @@
         <attr name="chart_type" />
         <attr name="chart_width" format="dimension" />
         <attr name="chart_height" format="dimension" />
+        <attr name="chart_depth" format="dimension" />
         <attr name="chart_gap_top" format="dimension" />
         <attr name="chart_gap_bottom" format="dimension" />
         <attr name="chart_gap_left" format="dimension" />

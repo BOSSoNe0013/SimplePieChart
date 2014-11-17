@@ -55,6 +55,7 @@ public class PieChartView extends View {
 
 	public PieChartView (Context context){
 		super(context);
+        init();
 	}
 
 	public PieChartView(Context context, AttributeSet attrs) {
@@ -63,15 +64,42 @@ public class PieChartView extends View {
         mChartType = a.getInt(R.styleable.PieChartView_chart_type, CHART_TYPE_PIE);
         mWidth = a.getDimensionPixelSize(R.styleable.PieChartView_chart_width, 64);
         mHeight = a.getDimensionPixelSize(R.styleable.PieChartView_chart_height, 64);
+        mDepth = a.getDimensionPixelSize(R.styleable.PieChartView_chart_depth, 10);
+        float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+        mGapLeft = a.getDimensionPixelSize(R.styleable.PieChartView_chart_gap_left, 0) + padding;
+        mGapRight = a.getDimensionPixelSize(R.styleable.PieChartView_chart_gap_right, 0) + padding;
+        mGapTop = a.getDimensionPixelSize(R.styleable.PieChartView_chart_gap_top, 0) + padding;
+        mGapBottom = a.getDimensionPixelSize(R.styleable.PieChartView_chart_gap_bottom, 0) + mDepth;
         a.recycle();
+        init();
         setState(IS_READY_TO_DRAW);
 	}
+
+    private void init(){
+        mBgPaint.setAntiAlias(true);
+        mBgPaint.setStyle(Paint.Style.FILL);
+        mBgPaint.setColor(Color.RED);
+        mBgPaint.setStrokeWidth(1.0f);
+
+        mLinePaints.setAntiAlias(true);
+        mLinePaints.setStyle(Paint.Style.STROKE);
+        mLinePaints.setColor(0xFF000000);
+        mLinePaints.setStrokeWidth(1.0f);
+
+        mClearPaint.setStyle(Paint.Style.FILL);
+        mClearPaint.setColor(Color.BLACK);
+
+        mShadowPaint.setColor(0xFF101010);
+        mShadowPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
+        setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
+    }
 
 	@SuppressLint("DrawAllocation")
 	@Override 
 	protected void onDraw(Canvas canvas) {
 
         if (mState == IS_READY_TO_DRAW) {
+            Log.d(TAG, "onDraw");
             setState(IS_DRAWING);
 
             Bitmap pie = Bitmap.createBitmap((int) mWidth, (int) mHeight, Bitmap.Config.ARGB_8888);
@@ -82,23 +110,6 @@ public class PieChartView extends View {
             Canvas shadowCanvas = new Canvas(shadow);
 
             srcCanvas.drawColor(BG_COLOR);
-
-            mBgPaint.setAntiAlias(true);
-            mBgPaint.setStyle(Paint.Style.FILL);
-            mBgPaint.setColor(Color.RED);
-            mBgPaint.setStrokeWidth(1.0f);
-
-            mLinePaints.setAntiAlias(true);
-            mLinePaints.setStyle(Paint.Style.STROKE);
-            mLinePaints.setColor(0xFF000000);
-            mLinePaints.setStrokeWidth(1.0f);
-
-            mClearPaint.setStyle(Paint.Style.FILL);
-            mClearPaint.setColor(Color.BLACK);
-
-            mShadowPaint.setColor(0xFF101010);
-            mShadowPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
-            setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
 
             RectF mOvals = new RectF(mGapLeft, mGapTop, mWidth - mGapRight, mHeight - mGapBottom);
             RectF mOutline = new RectF(mOvals.left, mOvals.top + mDepth, mOvals.right, mOvals.bottom + mDepth);
@@ -112,7 +123,7 @@ public class PieChartView extends View {
             Path depthPath = new Path();
             Path shadowPath = new Path();
 
-            outerPath.addRect(0, 0, mWidth, mHeight, Path.Direction.CW);
+            outerPath.addRect(0, 0, mWidth, mHeight + mDepth, Path.Direction.CW);
 
             centerPath.addOval(mOvals, Path.Direction.CW);
             centerPath.transform(scaleMatrix);
@@ -222,12 +233,12 @@ public class PieChartView extends View {
             canvas.drawOval(mOvals, mLinePaints);
             setState(IS_READY_TO_DRAW);
         }
-		super.onDraw(canvas);
+        super.onDraw(canvas);
 	}
 
     public void setGeometry(float width, float height, float gapLeft, float gapRight, float gapTop, float gapBottom, float depth) {
-        Resources r = getResources();
-        float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, r.getDisplayMetrics());
+        Log.d(TAG, "setGeometry");
+        float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
         mWidth     = width;
         mHeight    = height;
         mGapLeft   = gapLeft + padding;
@@ -260,6 +271,7 @@ public class PieChartView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if(oldh > 0 && oldw > 0) {
+            Log.d(TAG, "onSizeChanged");
             Log.d(TAG, oldw + "x" + oldh);
             float wRatio = oldw / w;
             float hRatio = oldh / h;
@@ -274,13 +286,85 @@ public class PieChartView extends View {
         }
     }
 
+    /**
+     * <p>
+     * Measure the view and its content to determine the measured width and the
+     * measured height. This method is invoked by {@link #measure(int, int)} and
+     * should be overriden by subclasses to provide accurate and efficient
+     * measurement of their contents.
+     * </p>
+     * <p/>
+     * <p>
+     * <strong>CONTRACT:</strong> When overriding this method, you
+     * <em>must</em> call {@link #setMeasuredDimension(int, int)} to store the
+     * measured width and height of this view. Failure to do so will trigger an
+     * <code>IllegalStateException</code>, thrown by
+     * {@link #measure(int, int)}. Calling the superclass'
+     * {@link #onMeasure(int, int)} is a valid use.
+     * </p>
+     * <p/>
+     * <p>
+     * The base class implementation of measure defaults to the background size,
+     * unless a larger size is allowed by the MeasureSpec. Subclasses should
+     * override {@link #onMeasure(int, int)} to provide better measurements of
+     * their content.
+     * </p>
+     * <p/>
+     * <p>
+     * If this method is overridden, it is the subclass's responsibility to make
+     * sure the measured height and width are at least the view's minimum height
+     * and width ({@link #getSuggestedMinimumHeight()} and
+     * {@link #getSuggestedMinimumWidth()}).
+     * </p>
+     *
+     * @param widthMeasureSpec  horizontal space requirements as imposed by the parent.
+     *                          The requirements are encoded with
+     *                          {@link android.view.View.MeasureSpec}.
+     * @param heightMeasureSpec vertical space requirements as imposed by the parent.
+     *                          The requirements are encoded with
+     *                          {@link android.view.View.MeasureSpec}.
+     * @see #getMeasuredWidth()
+     * @see #getMeasuredHeight()
+     * @see #setMeasuredDimension(int, int)
+     * @see #getSuggestedMinimumHeight()
+     * @see #getSuggestedMinimumWidth()
+     * @see android.view.View.MeasureSpec#getMode(int)
+     * @see android.view.View.MeasureSpec#getSize(int)
+     */
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.d(TAG, "onMeasure");
+        int width;
+        if(getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT){
+            width = (int) mWidth;
+        }
+        else if(getLayoutParams().width == ViewGroup.LayoutParams.MATCH_PARENT) {
+            width = MeasureSpec.getSize(widthMeasureSpec);
+            mWidth = width;
+        }
+        else {
+            width = getLayoutParams().width;
+        }
+        int height;
+        if(getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT){
+            height = (int) (mHeight + mDepth);
+        }
+        else if(getLayoutParams().height == ViewGroup.LayoutParams.MATCH_PARENT) {
+            height = MeasureSpec.getSize(heightMeasureSpec);
+        }
+        else {
+            height = (int) (getLayoutParams().height + mDepth);
+        }
+        setMeasuredDimension(width|MeasureSpec.EXACTLY, height|MeasureSpec.EXACTLY);
+    }
+
     public void setData(List<PieItem> data) {
 		mDataArray = data;
         mMaxConnection = 0;
         for (PieItem aMDataArray : mDataArray) {
             mMaxConnection += aMDataArray.Count;
         }
-		mState = IS_READY_TO_DRAW;
+		setState(IS_READY_TO_DRAW);
 	}
 
     public void setChartType(int type){
