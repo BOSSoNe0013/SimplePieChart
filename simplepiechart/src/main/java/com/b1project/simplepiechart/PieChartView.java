@@ -38,10 +38,17 @@ public class PieChartView extends View {
 	private static final int IS_READY_TO_DRAW = 1;
 	private static final int IS_DRAWING = 2;
 	private static final float START_RADIUS = 0;
+
 	private Paint mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	private Paint mLinePaints = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mClearPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mShadowPaint = new Paint(0);
+
+    private RectF mOvals = new RectF();
+    private RectF mOutline = new RectF();
+
+    private LightingColorFilter mClearLightingColorFilter = new LightingColorFilter(0xFFDDDDDD, 0xFF000000);
+
 	private float   mWidth = 64;
 	private float   mHeight = 64;
     private float   mDepth = 10.0f;
@@ -97,7 +104,7 @@ public class PieChartView extends View {
         }
     }
 
-	@SuppressLint("DrawAllocation")
+	//@SuppressLint("DrawAllocation")
 	@Override 
 	protected void onDraw(Canvas canvas) {
 
@@ -114,8 +121,8 @@ public class PieChartView extends View {
 
             srcCanvas.drawColor(BG_COLOR);
 
-            RectF mOvals = new RectF(mGapLeft, mGapTop, mWidth - mGapRight, mHeight - mGapBottom);
-            RectF mOutline = new RectF(mOvals.left, mOvals.top + mDepth, mOvals.right, mOvals.bottom + mDepth);
+            mOvals.set(mGapLeft, mGapTop, mWidth - mGapRight, mHeight - mGapBottom);
+            mOutline.set(mOvals.left, mOvals.top + mDepth, mOvals.right, mOvals.bottom + mDepth);
 
             Matrix scaleMatrix = new Matrix();
             scaleMatrix.setScale(0.3f, 0.3f, mOvals.centerX(), mOvals.centerY());
@@ -222,7 +229,7 @@ public class PieChartView extends View {
 
             canvas.drawBitmap(shadow, 0, 0, mClearPaint);
 
-            mClearPaint.setColorFilter(new LightingColorFilter(0xFFDDDDDD, 0xFF000000));
+            mClearPaint.setColorFilter(mClearLightingColorFilter);
             canvas.drawBitmap(background, 0, 0, mClearPaint);
             mClearPaint.setColorFilter(null);
 
