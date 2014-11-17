@@ -49,6 +49,8 @@ public class PieChartView extends View {
 
     private LightingColorFilter mClearLightingColorFilter = new LightingColorFilter(0xFFDDDDDD, 0xFF000000);
 
+    private Matrix mScaleMatrix = new Matrix();
+
 	private float   mWidth = 64;
 	private float   mHeight = 64;
     private float   mDepth = 10.0f;
@@ -104,7 +106,7 @@ public class PieChartView extends View {
         }
     }
 
-	//@SuppressLint("DrawAllocation")
+	@SuppressLint("DrawAllocation")
 	@Override 
 	protected void onDraw(Canvas canvas) {
 
@@ -124,8 +126,7 @@ public class PieChartView extends View {
             mOvals.set(mGapLeft, mGapTop, mWidth - mGapRight, mHeight - mGapBottom);
             mOutline.set(mOvals.left, mOvals.top + mDepth, mOvals.right, mOvals.bottom + mDepth);
 
-            Matrix scaleMatrix = new Matrix();
-            scaleMatrix.setScale(0.3f, 0.3f, mOvals.centerX(), mOvals.centerY());
+            mScaleMatrix.setScale(0.3f, 0.3f, mOvals.centerX(), mOvals.centerY());
 
             Path outerPath = new Path();
             Path centerPath = new Path();
@@ -136,7 +137,7 @@ public class PieChartView extends View {
             outerPath.addRect(0, 0, mWidth, mHeight + mDepth, Path.Direction.CW);
 
             centerPath.addOval(mOvals, Path.Direction.CW);
-            centerPath.transform(scaleMatrix);
+            centerPath.transform(mScaleMatrix);
 
             if (mChartType == CHART_TYPE_DONUT) {
                 srcCanvas.clipPath(centerPath, Region.Op.DIFFERENCE);
@@ -148,8 +149,8 @@ public class PieChartView extends View {
             depthPath.lineTo(mWidth - mGapRight, (mHeight + mDepth) / 2);
 
             bgCenterPath.addOval(mOvals, Path.Direction.CW);
-            scaleMatrix.setScale(0.3f, 0.3f, mOvals.centerX(), mOvals.centerY() + mDepth);
-            bgCenterPath.transform(scaleMatrix);
+            mScaleMatrix.setScale(0.3f, 0.3f, mOvals.centerX(), mOvals.centerY() + mDepth);
+            bgCenterPath.transform(mScaleMatrix);
 
             bgCanvas.clipPath(depthPath, Region.Op.REPLACE);
 
@@ -310,13 +311,13 @@ public class PieChartView extends View {
      * measured width and height of this view. Failure to do so will trigger an
      * <code>IllegalStateException</code>, thrown by
      * {@link #measure(int, int)}. Calling the superclass'
-     * {@link #onMeasure(int, int)} is a valid use.
+     * {@link View#onMeasure(int, int)} is a valid use.
      * </p>
      * <p/>
      * <p>
      * The base class implementation of measure defaults to the background size,
      * unless a larger size is allowed by the MeasureSpec. Subclasses should
-     * override {@link #onMeasure(int, int)} to provide better measurements of
+     * override {@link View#onMeasure(int, int)} to provide better measurements of
      * their content.
      * </p>
      * <p/>
