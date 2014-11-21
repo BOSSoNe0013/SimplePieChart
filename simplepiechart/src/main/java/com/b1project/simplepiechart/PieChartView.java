@@ -68,6 +68,7 @@ public class PieChartView extends View {
 	private List<PieItem> mDataArray;
     private int mChartType = CHART_TYPE_PIE;
 
+
 	public PieChartView (Context context){
 		super(context);
         init();
@@ -87,10 +88,11 @@ public class PieChartView extends View {
         mGapBottom = a.getDimensionPixelSize(R.styleable.PieChartView_chart_gap_bottom, 0) + mDepth;
         a.recycle();
         init();
-        setState(IS_READY_TO_DRAW);
+		setState(IS_READY_TO_DRAW);
 	}
 
     private void init(){
+
         mBgPaint.setAntiAlias(true);
         mBgPaint.setStyle(Paint.Style.FILL);
         mBgPaint.setColor(Color.RED);
@@ -112,10 +114,10 @@ public class PieChartView extends View {
     }
 
 	@SuppressLint("DrawAllocation")
-	@Override 
+	@Override
 	protected void onDraw(Canvas canvas) {
 
-        if (mState == IS_READY_TO_DRAW) {
+        if (mState == IS_READY_TO_DRAW && mWidth > 0 && mHeight > 0) {
             Log.d(TAG, "onDraw");
             setState(IS_DRAWING);
 
@@ -166,7 +168,7 @@ public class PieChartView extends View {
             }
             shadowCanvas.drawOval(mOutline, mShadowPaint);
 
-            if (mOvals.height() * 0.3f > mDepth) {
+            if (mOvals.height() * 0.5f > mDepth) {
                 bgCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
             }
 
@@ -228,7 +230,7 @@ public class PieChartView extends View {
             bgCanvas.drawPath(mDepthPath, mClearPaint);
             mClearPaint.setShader(null);
 
-            if (mChartType == CHART_TYPE_DONUT && mOvals.height() * 0.3f > mDepth) {
+            if (mChartType == CHART_TYPE_DONUT && mOvals.height() * 0.5f > mDepth) {
                 bgCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
                 bgCanvas.drawPath(mBgCenterPath, mLinePaints);
             }
@@ -252,25 +254,28 @@ public class PieChartView extends View {
         super.onDraw(canvas);
 	}
 
-    public void setGeometry(float width, float height, float gapLeft, float gapRight, float gapTop, float gapBottom, float depth) {
-        Log.d(TAG, "setGeometry");
+    public void setGeometry(int width, int height, int gapLeft, int gapRight, int gapTop, int gapBottom, int depth) {
+        Log.d(TAG, "setGeometry: " + width + "x" + height);
         float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+        Log.d(TAG, "padding: " + padding);
         mWidth     = width;
         mHeight    = height;
+        if(depth > -1) {
+            mDepth = depth;
+        }
         mGapLeft   = gapLeft + padding;
         mGapRight  = gapRight + padding;
         mGapTop    = gapTop + padding;
-        mGapBottom = gapBottom + depth + padding*2;
-        ViewGroup.LayoutParams params = getLayoutParams();
+        mGapBottom = gapBottom + mDepth + padding*2;
+        Log.d(TAG, "Size: " + mWidth + "x" + mHeight);
+
+        /*ViewGroup.LayoutParams params = getLayoutParams();
         if(params == null){
             params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
-        params.height = (int) height;
-        params.width = (int) width;
-        setLayoutParams(params);
-        if(depth > -1) {
-        		mDepth = depth;
-        }
+        params.height = height + depth;
+        params.width = width;
+        setLayoutParams(params);*/
         setState(IS_READY_TO_DRAW);
 	}
 
@@ -361,6 +366,7 @@ public class PieChartView extends View {
         else {
             width = getLayoutParams().width;
         }
+        Log.d(TAG, "width: " + width + "(" + mWidth + ")");
         int height;
         if(getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT){
             height = (int) (mHeight + mDepth);

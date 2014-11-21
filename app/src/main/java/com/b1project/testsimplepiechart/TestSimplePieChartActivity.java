@@ -20,7 +20,7 @@ public class TestSimplePieChartActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_simple_pie_chart);
 
-        List<PieItem> pieData = new ArrayList<PieItem>(0);
+        List<PieItem> pieData = new ArrayList<>(0);
 
         PieItem item1 = new PieItem();
         item1.Count = 15.6f;
@@ -59,7 +59,7 @@ public class TestSimplePieChartActivity extends ActionBarActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
 
-        pieChartView.setGeometry(width/1.5f, width/2.25f, 8, 8, 8, 8, width/10);
+        pieChartView.setGeometry((int) (width/1.5f), (int) (width/2.25f), 8, 8, 8, 8, width/10);
         pieChartView.setData(pieData);
         pieChartView.setChartType(PieChartView.CHART_TYPE_DONUT);
         LinearLayout grafContainer = (LinearLayout) findViewById(R.id.grafContainer);
