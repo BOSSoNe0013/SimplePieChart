@@ -10,7 +10,7 @@
 	<url>https://github.com/BOSSoNe0013/SimplePieChart</url>
 
 	<parent>
-		<groupId>com.github.bossone0013.simplepiechart</groupId>
+		<groupId>com.b1project.SimplePieChart</groupId>
 		<artifactId>SimplePieChart</artifactId>
 		<version>1.0.2</version>
 	</parent>

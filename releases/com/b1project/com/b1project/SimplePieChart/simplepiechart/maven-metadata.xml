@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <groupId>SimplePieChart</groupId>
+  <groupId>com.b1project.SimplePieChart</groupId>
   <artifactId>simplepiechart</artifactId>
   <version>1.0.2</version>
   <versioning>
     <versions>
       <version>1.0.2</version>
     </versions>
-    <lastUpdated>20141123123129</lastUpdated>
+    <lastUpdated>20141123124244</lastUpdated>
   </versioning>
 </metadata>

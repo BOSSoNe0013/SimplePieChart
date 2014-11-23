@@ -23,6 +23,16 @@ android {
                 mavenDeployer {
                     repository(url: "file://localhost" + projectDir + "/../releases/com/b1project/")
                     pom.version = defaultConfig.versionName
+                    pom.groupId = 'com.b1project.SimplePieChart'
+                    pom.project {
+                        licenses {
+                            license {
+                                name 'The Apache Software License, Version 2.0'
+                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                                distribution 'repo'
+                            }
+                        }
+                    }
                 }
             }
         }
