@@ -9,6 +9,19 @@ SimplePieChart is an Android module aims to easily create pie or donut charts
 
     Android SDK rev 10 (GINGERBREAD_MR1)
 
+## Usage
+
+### Gradle dependency
+
+    repositories{
+        maven{
+            url 'https://github.com/BOSSoNe0013/SimplePieChart/raw/master/releases/';
+        }
+    }
+    dependencies{
+        compile 'com.b1project.SimplePieChart:simplepiechart:1.0.2'
+    }
+
 ## License
 
 Copyright 2014 Cyril Bosselut
