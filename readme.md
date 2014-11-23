@@ -19,7 +19,7 @@ SimplePieChart is an Android module aims to easily create pie or donut charts
         }
     }
     dependencies{
-        compile 'com.b1project.SimplePieChart:simplepiechart:1.0.2'
+        compile 'com.b1project.SimplePieChart:simplepiechart:1.0.3'
     }
 
 ## License
