@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.b1project.simplepiechart"
-        minSdkVersion 10
+        minSdkVersion 9
         targetSdkVersion 21
         versionCode 6
         versionName "1.0.2"
