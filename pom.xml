@@ -5,7 +5,7 @@
 	<groupId>com.github.bossone0013.simplepiechart</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0</version>
+	<version>1.0.2</version>
 	<name>SimplePieChart Project</name>
 	<description>Simple Pie Charts for Android</description>
 	<url>https://github.com/BOSSoNe0013/SimplePieChart</url>
@@ -22,7 +22,7 @@
 		<url>https://github.com/BOSSoNe0013/SimplePieChart</url>
 		<connection>scm:git:git://github.com/BOSSoNe0013/SimplePieChart.git</connection>
 		<developerConnection>scm:git:git@github.com:BOSSoNe0013/SimplePieChart.git</developerConnection>
-		<tag>v2.3</tag>
+		<tag>1.0.2</tag>
 	</scm>
 
 	<developers>

@@ -68,7 +68,6 @@ public class PieChartView extends View {
 	private List<PieItem> mDataArray;
     private int mChartType = CHART_TYPE_PIE;
 
-
 	public PieChartView (Context context){
 		super(context);
         init();
@@ -266,7 +265,7 @@ public class PieChartView extends View {
         mGapLeft   = gapLeft + padding;
         mGapRight  = gapRight + padding;
         mGapTop    = gapTop + padding;
-        mGapBottom = gapBottom + mDepth + padding*2;
+        mGapBottom = gapBottom + mDepth + padding;
         Log.d(TAG, "Size: " + mWidth + "x" + mHeight);
 
         /*ViewGroup.LayoutParams params = getLayoutParams();
