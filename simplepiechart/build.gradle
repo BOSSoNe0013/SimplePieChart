@@ -21,7 +21,7 @@ android {
         uploadArchives {
             repositories {
                 mavenDeployer {
-                    repository(url: "file://localhost" + projectDir + "/../releases/com/b1project/")
+                    repository(url: "file://localhost" + projectDir + "/../releases/")
                     pom.version = defaultConfig.versionName
                     pom.groupId = 'com.b1project.SimplePieChart'
                     pom.project {
