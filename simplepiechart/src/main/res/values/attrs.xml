@@ -13,5 +13,6 @@
         <attr name="chart_gap_bottom" format="dimension" />
         <attr name="chart_gap_left" format="dimension" />
         <attr name="chart_gap_right" format="dimension" />
+        <attr name="chart_shadow_radius" format="dimension" />
     </declare-styleable>
 </resources>

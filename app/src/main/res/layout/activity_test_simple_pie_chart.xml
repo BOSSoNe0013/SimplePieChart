@@ -47,7 +47,8 @@
                 custom:chart_width="240dp"
                 custom:chart_height="120dp"
                 custom:chart_depth="16dp"
-                custom:chart_type="donut" />
+                custom:chart_type="donut"
+                custom:chart_shadow_radius="16dp"/>
         </LinearLayout>
     </ScrollView>
 

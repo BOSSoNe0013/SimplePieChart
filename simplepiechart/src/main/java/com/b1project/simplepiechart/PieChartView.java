@@ -67,6 +67,8 @@ public class PieChartView extends View {
     private float   mMaxConnection;
 	private List<PieItem> mDataArray;
     private int mChartType = CHART_TYPE_PIE;
+    private boolean mHasShadow = true;
+	private int     mShadowRadius = 8;
 
 	public PieChartView (Context context){
 		super(context);
@@ -85,6 +87,7 @@ public class PieChartView extends View {
         mGapRight = a.getDimensionPixelSize(R.styleable.PieChartView_chart_gap_right, 0) + padding;
         mGapTop = a.getDimensionPixelSize(R.styleable.PieChartView_chart_gap_top, 0) + padding;
         mGapBottom = a.getDimensionPixelSize(R.styleable.PieChartView_chart_gap_bottom, 0) + mDepth;
+        setShadowRadius(a.getDimensionPixelSize(R.styleable.PieChartView_chart_shadow_radius, 8));
         a.recycle();
         init();
 		setState(IS_READY_TO_DRAW);
@@ -106,7 +109,7 @@ public class PieChartView extends View {
         mClearPaint.setColor(Color.BLACK);
 
         mShadowPaint.setColor(0xFF101010);
-        mShadowPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
+        mShadowPaint.setMaskFilter(new BlurMaskFilter(mShadowRadius, BlurMaskFilter.Blur.NORMAL));
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
         }
@@ -122,10 +125,15 @@ public class PieChartView extends View {
 
             Bitmap pie = Bitmap.createBitmap((int) mWidth, (int) mHeight, Bitmap.Config.ARGB_8888);
             Bitmap background = Bitmap.createBitmap((int) mWidth, (int) (mHeight + mDepth), Bitmap.Config.ARGB_8888);
-            Bitmap shadow = Bitmap.createBitmap((int) mWidth, (int) (mHeight + mDepth), Bitmap.Config.ARGB_8888);
+            Bitmap shadow = null;
+
             Canvas srcCanvas = new Canvas(pie);
             Canvas bgCanvas = new Canvas(background);
-            Canvas shadowCanvas = new Canvas(shadow);
+            Canvas shadowCanvas = null;
+            if(mHasShadow) {
+                shadow = Bitmap.createBitmap((int) mWidth, (int) (mHeight + mDepth), Bitmap.Config.ARGB_8888);
+                shadowCanvas = new Canvas(shadow);
+            }
 
             srcCanvas.drawColor(BG_COLOR);
 
@@ -160,12 +168,14 @@ public class PieChartView extends View {
 
             bgCanvas.clipPath(mDepthPath, Region.Op.REPLACE);
 
-            mShadowPath.addOval(mOutline, Path.Direction.CW);
-            shadowCanvas.clipPath(mOuterPath, Region.Op.REPLACE);
-            if (mChartType == CHART_TYPE_DONUT) {
-                shadowCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+            if(shadowCanvas != null) {
+                mShadowPath.addOval(mOutline, Path.Direction.CW);
+                shadowCanvas.clipPath(mOuterPath, Region.Op.REPLACE);
+                if (mChartType == CHART_TYPE_DONUT) {
+                    shadowCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+                }
+                shadowCanvas.drawOval(mOutline, mShadowPaint);
             }
-            shadowCanvas.drawOval(mOutline, mShadowPaint);
 
             if (mOvals.height() * 0.5f > mDepth) {
                 bgCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
@@ -234,7 +244,9 @@ public class PieChartView extends View {
                 bgCanvas.drawPath(mBgCenterPath, mLinePaints);
             }
 
-            canvas.drawBitmap(shadow, 0, 0, mClearPaint);
+            if(shadow != null) {
+                canvas.drawBitmap(shadow, 0, 0, mClearPaint);
+            }
 
             mClearPaint.setColorFilter(mClearLightingColorFilter);
             canvas.drawBitmap(background, 0, 0, mClearPaint);
@@ -253,6 +265,22 @@ public class PieChartView extends View {
         super.onDraw(canvas);
 	}
 
+    public void setShadowRadius(int radius){
+        if(radius > 0){
+            mShadowRadius = radius;
+            if(mShadowRadius > mGapLeft){
+                mGapLeft = mShadowRadius;
+            }
+            if(mShadowRadius > mGapRight){
+                mGapRight = mShadowRadius;
+            }
+            mHasShadow = true;
+        }
+        else {
+            mHasShadow = false;
+        }
+    }
+
     public void setGeometry(int width, int height, int gapLeft, int gapRight, int gapTop, int gapBottom, int depth) {
         Log.d(TAG, "setGeometry: " + width + "x" + height);
         float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
@@ -264,6 +292,12 @@ public class PieChartView extends View {
         }
         mGapLeft   = gapLeft + padding;
         mGapRight  = gapRight + padding;
+        if(mShadowRadius > mGapLeft){
+            mGapLeft = mShadowRadius;
+        }
+        if(mShadowRadius > mGapRight){
+            mGapRight = mShadowRadius;
+        }
         mGapTop    = gapTop + padding;
         mGapBottom = gapBottom + mDepth + padding;
         Log.d(TAG, "Size: " + mWidth + "x" + mHeight);
