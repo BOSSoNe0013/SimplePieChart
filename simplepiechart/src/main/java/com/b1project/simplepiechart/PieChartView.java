@@ -263,21 +263,18 @@ public class PieChartView extends View {
             if(mDepth > 0) {
                 canvas.drawPath(mDepthPath, mLinePaints);
             }
-            mLinePaints.setColor(0xFFFFFFFF);
-            if (mChartType == CHART_TYPE_DONUT) {
-                if(mDepth > 0) {
-                    canvas.drawPath(mCenterPath, mLinePaints);
-                }
-                else{
-                    mClearPaint.setColor(0xFFFFFFFF);
-                    canvas.drawPath(mCenterPath, mClearPaint);
-                }
-            }
-
-            canvas.drawBitmap(pie, 0, 0, mClearPaint);
             if(mDepth == 0) {
                 mLinePaints.setColor(mBorderColor);
             }
+            else {
+                mLinePaints.setColor(0xFFFFFFFF);
+            }
+            if (mChartType == CHART_TYPE_DONUT) {
+                    canvas.drawPath(mCenterPath, mLinePaints);
+                    //canvas.drawPath(mCenterPath, mClearPaint);
+            }
+
+            canvas.drawBitmap(pie, 0, 0, mClearPaint);
             canvas.drawOval(mOvals, mLinePaints);
             setState(IS_READY_TO_DRAW);
         }
