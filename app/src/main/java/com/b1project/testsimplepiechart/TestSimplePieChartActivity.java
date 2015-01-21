@@ -59,13 +59,16 @@ public class TestSimplePieChartActivity extends ActionBarActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
 
-        pieChartView.setGeometry((int) (width/1.5f), (int) (width/2.25f), 8, 8, 8, 8, width/10);
+        pieChartView.setGeometry((int) (width/1.5f), (int) (width/2.25f), 8, 8, 8, 8, 0);
+        pieChartView.setShadowRadius(0);
+        pieChartView.setShadowColor(Color.BLUE);
         pieChartView.setData(pieData);
         pieChartView.setChartType(PieChartView.CHART_TYPE_DONUT);
         LinearLayout grafContainer = (LinearLayout) findViewById(R.id.grafContainer);
         grafContainer.addView(pieChartView);
+
         PieChartView pieChartViewXml = (PieChartView) findViewById(R.id.myChart);
-        pieChartViewXml.setData(pieData);
+         pieChartViewXml.setData(pieData);
     }
 
 

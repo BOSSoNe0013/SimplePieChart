@@ -42,6 +42,7 @@ public class PieChartView extends View {
 	private Paint mLinePaints = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mClearPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mShadowPaint = new Paint(0);
+	private Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private RectF mOvals = new RectF();
     private RectF mOutline = new RectF();
@@ -69,6 +70,8 @@ public class PieChartView extends View {
     private int mChartType = CHART_TYPE_PIE;
     private boolean mHasShadow = true;
 	private int     mShadowRadius = 8;
+	private int     mShadowColor = 0xFF101010;
+	private int     mBorderColor = 0xFF101010;
 
 	public PieChartView (Context context){
 		super(context);
@@ -108,7 +111,7 @@ public class PieChartView extends View {
         mClearPaint.setStyle(Paint.Style.FILL);
         mClearPaint.setColor(Color.BLACK);
 
-        mShadowPaint.setColor(0xFF101010);
+        mShadowPaint.setColor(mShadowColor);
         mShadowPaint.setMaskFilter(new BlurMaskFilter(mShadowRadius, BlurMaskFilter.Blur.NORMAL));
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
@@ -157,10 +160,12 @@ public class PieChartView extends View {
                 srcCanvas.clipPath(mCenterPath, Region.Op.DIFFERENCE);
             }
 
-            mDepthPath.arcTo(mOutline, 0, 180);
-            mDepthPath.lineTo(mGapLeft, (mHeight - mDepth) / 2);
-            mDepthPath.arcTo(mOvals, 180, 180);
-            mDepthPath.lineTo(mWidth - mGapRight, (mHeight + mDepth) / 2);
+            //if(mDepth > 0) {
+                mDepthPath.arcTo(mOutline, 0, 180);
+                mDepthPath.lineTo(mGapLeft, (mHeight - mDepth) / 2);
+                mDepthPath.arcTo(mOvals, 180, 180);
+                mDepthPath.lineTo(mWidth - mGapRight, (mHeight + mDepth) / 2);
+            //}
 
             mBgCenterPath.addOval(mOvals, Path.Direction.CW);
             mScaleMatrix.setScale(0.3f, 0.3f, mOvals.centerX(), mOvals.centerY() + mDepth);
@@ -235,8 +240,10 @@ public class PieChartView extends View {
                 mStart += mSweep;
             }
 
-            mClearPaint.setShader(new LinearGradient(0, 0, mWidth, 0, Color.TRANSPARENT, 0x4C000000, Shader.TileMode.MIRROR));
-            bgCanvas.drawPath(mDepthPath, mClearPaint);
+            if(mDepth > 0) {
+                mClearPaint.setShader(new LinearGradient(0, 0, mWidth, 0, Color.TRANSPARENT, 0x4C000000, Shader.TileMode.MIRROR));
+                bgCanvas.drawPath(mDepthPath, mClearPaint);
+            }
             mClearPaint.setShader(null);
 
             if (mChartType == CHART_TYPE_DONUT && mOvals.height() * 0.5f > mDepth) {
@@ -248,20 +255,25 @@ public class PieChartView extends View {
                 canvas.drawBitmap(shadow, 0, 0, mClearPaint);
             }
 
-            mClearPaint.setColorFilter(mClearLightingColorFilter);
-            canvas.drawBitmap(background, 0, 0, mClearPaint);
-            mClearPaint.setColorFilter(null);
+            if(mDepth > 0) {
+                mClearPaint.setColorFilter(mClearLightingColorFilter);
+                canvas.drawBitmap(background, 0, 0, mClearPaint);
+                mClearPaint.setColorFilter(null);
+            }
 
-            canvas.drawPath(mDepthPath, mLinePaints);
+            if(mDepth > 0) {
+                canvas.drawPath(mDepthPath, mLinePaints);
+            }
             mLinePaints.setColor(0xFFFFFFFF);
             if (mChartType == CHART_TYPE_DONUT && mDepth > 0) {
                 canvas.drawPath(mCenterPath, mLinePaints);
             }
 
             canvas.drawBitmap(pie, 0, 0, mClearPaint);
-            if(mDepth > 0) {
-                canvas.drawOval(mOvals, mLinePaints);
+            if(mDepth == 0) {
+                mLinePaints.setColor(mBorderColor);
             }
+            canvas.drawOval(mOvals, mLinePaints);
             setState(IS_READY_TO_DRAW);
         }
         super.onDraw(canvas);
@@ -281,6 +293,11 @@ public class PieChartView extends View {
         else {
             mHasShadow = false;
         }
+    }
+
+    public void setShadowColor(int color){
+        mShadowColor = color;
+        mBorderColor = color;
     }
 
     public void setGeometry(int width, int height, int gapLeft, int gapRight, int gapTop, int gapBottom, int depth) {
