@@ -36,13 +36,11 @@ public class PieChartView extends View {
 	private static final int WAIT = 0;
 	private static final int IS_READY_TO_DRAW = 1;
 	private static final int IS_DRAWING = 2;
-	private static final float START_RADIUS = 0;
 
 	private Paint mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	private Paint mLinePaints = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mClearPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mShadowPaint = new Paint(0);
-	private Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private RectF mOvals = new RectF();
     private RectF mOutline = new RectF();
@@ -64,6 +62,7 @@ public class PieChartView extends View {
 	private float   mGapRight = 8;
 	private float   mGapTop = 8;
 	private float   mGapBottom = 16;
+    private float mStartRadius = 0;
 	private int     mState = WAIT;
     private float   mMaxConnection;
 	private List<PieItem> mDataArray;
@@ -186,7 +185,7 @@ public class PieChartView extends View {
                 bgCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
             }
 
-            float mStart = START_RADIUS;
+            float mStart = mStartRadius;
             PieItem item;
             int prevX = (int) (bgCanvas.getWidth() - mGapRight);
             float innerCircleStart = mOvals.centerX() - (mOvals.width() / 2) * 0.3f;
@@ -443,6 +442,10 @@ public class PieChartView extends View {
 
     public void setChartType(int type){
         mChartType = type;
+    }
+
+    public void setStartRadius(float radius){
+        mStartRadius = radius;
     }
 
 	private void setState(int State) {
