@@ -59,7 +59,7 @@ public class TestSimplePieChartActivity extends ActionBarActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
 
-        pieChartView.setGeometry((int) (width/1.5f), (int) (width/2.25f), 8, 8, 8, 8, width/10);
+        pieChartView.setGeometry((int) (width/1.5f), (int) (width/2.25f), 8, 8, 8, 8, /*width/1*/0);
         pieChartView.setShadowRadius(0);
         pieChartView.setShadowColor(Color.BLACK);
         pieChartView.setData(pieData);
