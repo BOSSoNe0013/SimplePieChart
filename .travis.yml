@@ -18,6 +18,7 @@ android:
     - android-22
 
     # Additional components
+    - extra-android-m2repository
     - extra-android-support
 
     # Specify at least one system image,
