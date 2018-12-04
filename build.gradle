@@ -26,6 +26,7 @@ allprojects {
             url 'https://maven.google.com/'
             name 'Google'
         }
+        jcenter()
     }
 }
 apply plugin: 'android-reporting'
