@@ -1,7 +1,5 @@
 package com.b1project.simplepiechart;
 
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -16,6 +14,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Shader;
@@ -25,6 +24,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.List;
 
 public class PieChartView extends View {
 
@@ -92,7 +93,7 @@ public class PieChartView extends View {
         setShadowRadius(a.getDimensionPixelSize(R.styleable.PieChartView_chart_shadow_radius, 8));
         a.recycle();
         init();
-		setState(IS_READY_TO_DRAW);
+        setData(PieItem.Companion.getDummyData());
 	}
 
     private void init(){
@@ -112,9 +113,7 @@ public class PieChartView extends View {
 
         mShadowPaint.setColor(mShadowColor);
         mShadowPaint.setMaskFilter(new BlurMaskFilter(mShadowRadius, BlurMaskFilter.Blur.NORMAL));
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
-        }
+        setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
     }
 
 	@SuppressLint("DrawAllocation")
@@ -122,7 +121,14 @@ public class PieChartView extends View {
 	protected void onDraw(Canvas canvas) {
 
         if (mState == IS_READY_TO_DRAW && mWidth > 0 && mHeight > 0) {
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             Log.d(TAG, "onDraw");
+            Log.d(TAG, "Items: " + mDataArray.size());
+            Log.d(TAG, "Chart type: " + mChartType);
+            Log.d(TAG, "Chart width: " + mWidth);
+            Log.d(TAG, "Chart height: " + mHeight);
+            Log.d(TAG, "Chart depth: " + mDepth);
+            Log.d(TAG, "Has shadow: " + mHasShadow);
             setState(IS_DRAWING);
 
             Bitmap pie = Bitmap.createBitmap((int) mWidth, (int) mHeight, Bitmap.Config.ARGB_8888);
@@ -155,58 +161,81 @@ public class PieChartView extends View {
             mCenterPath.addOval(mOvals, Path.Direction.CW);
             mCenterPath.transform(mScaleMatrix);
 
-            if (mChartType == CHART_TYPE_DONUT) {
+            if (mChartType == CHART_TYPE_DONUT && !isInEditMode()) {
                 srcCanvas.clipPath(mCenterPath, Region.Op.DIFFERENCE);
             }
 
-            //if(mDepth > 0) {
-                mDepthPath.arcTo(mOutline, 0, 180);
-                mDepthPath.lineTo(mGapLeft, (mHeight - mDepth) / 2);
-                mDepthPath.arcTo(mOvals, 180, 180);
-                mDepthPath.lineTo(mWidth - mGapRight, (mHeight + mDepth) / 2);
-            //}
+            mDepthPath.arcTo(mOutline, 0, 180);
+            mDepthPath.lineTo(mGapLeft, (mHeight - mDepth) / 2);
+            mDepthPath.arcTo(mOvals, 180, 180);
+            mDepthPath.lineTo(mWidth - mGapRight, (mHeight + mDepth) / 2);
 
             mBgCenterPath.addOval(mOvals, Path.Direction.CW);
             mScaleMatrix.setScale(0.3f, 0.3f, mOvals.centerX(), mOvals.centerY() + mDepth);
             mBgCenterPath.transform(mScaleMatrix);
 
-            bgCanvas.clipPath(mDepthPath, Region.Op.REPLACE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                bgCanvas.clipPath(mDepthPath);
+            }
+            else {
+                bgCanvas.clipPath(mDepthPath, Region.Op.REPLACE);
+            }
 
             if(shadowCanvas != null) {
                 mShadowPath.addOval(mOutline, Path.Direction.CW);
-                shadowCanvas.clipPath(mOuterPath, Region.Op.REPLACE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    shadowCanvas.clipPath(mOuterPath);
+                }
+                else {
+                    shadowCanvas.clipPath(mOuterPath, Region.Op.REPLACE);
+                }
                 if (mChartType == CHART_TYPE_DONUT) {
-                    shadowCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        Path p = new Path();
+                        p.addOval(mOvals, Path.Direction.CW);
+
+                        p.op(mBgCenterPath, Path.Op.INTERSECT);
+                        shadowCanvas.clipOutPath(p);
+                    }
+                    else {
+                        shadowCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+                    }
                 }
                 shadowCanvas.drawOval(mOutline, mShadowPaint);
             }
 
             if (mOvals.height() * 0.5f > mDepth) {
-                bgCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    bgCanvas.clipOutPath(mBgCenterPath);
+                }
+                else {
+                    bgCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+                }
             }
 
             float mStart = mStartRadius;
             PieItem item;
-            int prevX = (int) (bgCanvas.getWidth() - mGapRight);
+            int prevX = (int) (getWidth() - mGapRight);
             float innerCircleStart = mOvals.centerX() - (mOvals.width() / 2) * 0.3f;
             float innerCircleStop = mOvals.centerX() + (mOvals.width() / 2) * 0.3f;
             Log.d(TAG, "inner circle start: " + innerCircleStart);
             Log.d(TAG, "inner circle stop: " + innerCircleStop);
             for (PieItem aMDataArray : mDataArray) {
+                Log.d(TAG, "--------------------------------------------------");
                 item = aMDataArray;
-                mBgPaint.setColor(item.Color);
-                Bitmap tex = BitmapFactory.decodeResource(getResources(), item.Texture);
+                mBgPaint.setColor(item.getColor());
+                Bitmap tex = BitmapFactory.decodeResource(getResources(), item.getTexture());
                 if (tex != null) {
                     BitmapShader textureShader = new BitmapShader(tex, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
                     mBgPaint.setShader(textureShader);
-                    mBgPaint.setColorFilter(new LightingColorFilter(0x00FFFFFF, item.Color));
+                    mBgPaint.setColorFilter(new LightingColorFilter(0x00FFFFFF, item.getColor()));
                 } else {
                     mBgPaint.setColorFilter(null);
                     mBgPaint.setShader(null);
                 }
-                float mSweep = (float) 360 * (item.Count / mMaxConnection);
+                float mSweep = (float) 360 * (item.getValue() / mMaxConnection);
                 srcCanvas.drawArc(mOvals, mStart, mSweep, true, mBgPaint);
-                Log.d(TAG, "item: " + item.Label);
+                Log.d(TAG, "item: " + item.getLabel());
                 Log.d(TAG, "arc angle: " + (mStart + mSweep));
                 if (mStart + mSweep >= 0 && (mStart + mSweep <= 180 || mStart < 180)) {
                     Log.d(TAG, "outer depth");
@@ -238,6 +267,7 @@ public class PieChartView extends View {
                 }
                 mStart += mSweep;
             }
+            Log.d(TAG, "--------------------------------------------------");
 
             if(mDepth > 0) {
                 mClearPaint.setShader(new LinearGradient(0, 0, mWidth, 0, Color.TRANSPARENT, 0x4C000000, Shader.TileMode.MIRROR));
@@ -246,7 +276,12 @@ public class PieChartView extends View {
             mClearPaint.setShader(null);
 
             if (mChartType == CHART_TYPE_DONUT && mOvals.height() * 0.5f > mDepth) {
-                bgCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    bgCanvas.clipOutPath(mBgCenterPath);
+                }
+                else {
+                    bgCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+                }
                 bgCanvas.drawPath(mBgCenterPath, mLinePaints);
             }
 
@@ -258,9 +293,6 @@ public class PieChartView extends View {
                 mClearPaint.setColorFilter(mClearLightingColorFilter);
                 canvas.drawBitmap(background, 0, 0, mClearPaint);
                 mClearPaint.setColorFilter(null);
-            }
-
-            if(mDepth > 0) {
                 canvas.drawPath(mDepthPath, mLinePaints);
             }
             if(mDepth == 0) {
@@ -270,12 +302,12 @@ public class PieChartView extends View {
                 mLinePaints.setColor(0xFFFFFFFF);
             }
             if (mChartType == CHART_TYPE_DONUT) {
-                    canvas.drawPath(mCenterPath, mLinePaints);
-                    //canvas.drawPath(mCenterPath, mClearPaint);
+                canvas.drawPath(mCenterPath, mLinePaints);
             }
 
             canvas.drawBitmap(pie, 0, 0, mClearPaint);
             canvas.drawOval(mOvals, mLinePaints);
+
             setState(IS_READY_TO_DRAW);
         }
         super.onDraw(canvas);
@@ -323,13 +355,6 @@ public class PieChartView extends View {
         mGapBottom = gapBottom + mDepth + padding;
         Log.d(TAG, "Size: " + mWidth + "x" + mHeight);
 
-        /*ViewGroup.LayoutParams params = getLayoutParams();
-        if(params == null){
-            params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        params.height = height + depth;
-        params.width = width;
-        setLayoutParams(params);*/
         setState(IS_READY_TO_DRAW);
 	}
 
@@ -348,8 +373,8 @@ public class PieChartView extends View {
         if(oldh > 0 && oldw > 0) {
             Log.d(TAG, "onSizeChanged");
             Log.d(TAG, oldw + "x" + oldh);
-            float wRatio = oldw / w;
-            float hRatio = oldh / h;
+            float wRatio = ((float)oldw) / w;
+            float hRatio = ((float)oldh) / h;
             mWidth = w;
             mHeight = h;
             mDepth = mDepth / hRatio;
@@ -438,19 +463,22 @@ public class PieChartView extends View {
 		mDataArray = data;
         mMaxConnection = 0;
         for (PieItem aMDataArray : mDataArray) {
-            mMaxConnection += aMDataArray.Count;
+            mMaxConnection += aMDataArray.getValue();
         }
 		setState(IS_READY_TO_DRAW);
 	}
 
+    @SuppressWarnings("unused")
     public void setChartType(int type){
         mChartType = type;
     }
 
+    @SuppressWarnings("unused")
     public void setStartRadius(float radius){
         mStartRadius = radius;
     }
 
+    @SuppressWarnings("unused")
 	private void setState(int State) {
 		mState = State;
 	}

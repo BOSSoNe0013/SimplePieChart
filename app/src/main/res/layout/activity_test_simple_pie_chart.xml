@@ -25,13 +25,11 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2"
             android:gravity="center_horizontal">
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:id="@+id/grafContainer"
                 android:gravity="center"
                 android:layout_marginTop="8dp"
@@ -40,15 +38,14 @@
             <com.b1project.simplepiechart.PieChartView
                 android:id="@+id/myChart"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
-                custom:chart_width="240dp"
-                custom:chart_height="120dp"
                 custom:chart_depth="16dp"
+                custom:chart_height="280dp"
+                custom:chart_shadow_radius="16dp"
                 custom:chart_type="donut"
-                custom:chart_shadow_radius="16dp"/>
+                custom:chart_width="320dp" />
         </LinearLayout>
     </ScrollView>
 

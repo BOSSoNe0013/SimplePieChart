@@ -1,20 +1,22 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'maven'
 
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     lintOptions {
         abortOnError false
     }
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 22
-        versionCode 12
-        versionName "1.0.9"
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode 20
+        versionName "1.1.0"
     }
     buildTypes {
         release {
@@ -40,5 +42,11 @@ android {
             }
         }
     }
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
