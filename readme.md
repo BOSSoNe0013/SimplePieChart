@@ -3,7 +3,7 @@ Simple Pie Chart for Android
 
 SimplePieChart is an Android module aims to easily create pie or donut charts
 
-![SimplePieChart] (https://photos.app.goo.gl/vodjTbRY2zU7vX8VA "SimplePieChart")
+![SimplePieChart](https://photos.app.goo.gl/vodjTbRY2zU7vX8VA "SimplePieChart")
 
 ## Requirements
 
