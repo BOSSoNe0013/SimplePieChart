@@ -191,17 +191,19 @@ public class PieChartView extends View {
                 }
                 if (mChartType == CHART_TYPE_DONUT) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        Path p = new Path();
+                        /*Path p = new Path();
                         p.addOval(mOvals, Path.Direction.CW);
 
-                        p.op(mBgCenterPath, Path.Op.INTERSECT);
-                        shadowCanvas.clipOutPath(p);
+                        p.op(mBgCenterPath, Path.Op.INTERSECT);*/
+                        //shadowCanvas.clipOutPath(p);
+                        mShadowPath.op(mBgCenterPath, Path.Op.DIFFERENCE);
+                        shadowCanvas.drawPath(mShadowPath, mShadowPaint);
                     }
                     else {
                         shadowCanvas.clipPath(mBgCenterPath, Region.Op.XOR);
+                        shadowCanvas.drawOval(mOutline, mShadowPaint);
                     }
                 }
-                shadowCanvas.drawOval(mOutline, mShadowPaint);
             }
 
             if (mOvals.height() * 0.5f > mDepth) {
