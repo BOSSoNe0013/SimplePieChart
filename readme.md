@@ -3,7 +3,7 @@ Simple Pie Chart for Android
 
 SimplePieChart is an Android module aims to easily create pie or donut charts
 
-<image src="https://lh3.googleusercontent.com/m_kbmhXq-7tTrlriwlyNnl1ysY0kPvwFqE3hR06Rrx1fcpeN_aQ6J-KEIJFzVqjxIhT6mYB-HcaRVN24kk53m_pRoQK3zyymX8Ld7is5j1ofrgbNC2iOVEN2aZ2z4AfvzQE5ynUuJNvUKMbqnFXN_cguJmvP5u1U5lCld-V7d6Kszi2ToKeHlOI7qjN0DW-jZlDRWIu5_G8uXPQ1kRpyAkno056xkBVaSFXw63DRKi6nEMXbRsvxISyldyvK6vSCjmTX_F4lDRjtDOaRDF-CDcxB9ZMKuVfskCwsTke6SUieZ1XsL51gi35_qQeDmWMed5D_4j5IUsOByM_FEA0aVQybTFLgOiZtxY7A5HbRghGzX0ZmJ7pa7FS-lnvQ5ZfsnpXIg487zBXRkAnng2nHdpXtI-_GBJnZ-BotkYknpq6wJqMT8B6w2nQzcpRO-iQhF3z3wjxMYJvPEN5E5ofZDvwGiEguxFYkJdYB5oTV7ylPOJi8XPT8XTjxVi7niZmInp8gKBbkWRLTRSaRMwNlByX2BVsr5f-tqtWTVfF2_J1TND9rYm-rUoq0Cr2qmxKJEdC1VwTVFAMPSbStepdbFBo80FYZ7Wg4XwZnreKdeUBVJcaN8QENOZOv73ZlH-S7cbYzCzBDbFTx-AwhQUC5rE2vgN7lqnQ9IzlmAKJAhk7GdhrCB-fulMdU9-cHaEFpNoJ4TonNhe_B0jGeyEc=w693-h1461-no" alt="SimplePieChart" height="320" />
+<image src="https://lh3.googleusercontent.com/m_kbmhXq-7tTrlriwlyNnl1ysY0kPvwFqE3hR06Rrx1fcpeN_aQ6J-KEIJFzVqjxIhT6mYB-HcaRVN24kk53m_pRoQK3zyymX8Ld7is5j1ofrgbNC2iOVEN2aZ2z4AfvzQE5ynUuJNvUKMbqnFXN_cguJmvP5u1U5lCld-V7d6Kszi2ToKeHlOI7qjN0DW-jZlDRWIu5_G8uXPQ1kRpyAkno056xkBVaSFXw63DRKi6nEMXbRsvxISyldyvK6vSCjmTX_F4lDRjtDOaRDF-CDcxB9ZMKuVfskCwsTke6SUieZ1XsL51gi35_qQeDmWMed5D_4j5IUsOByM_FEA0aVQybTFLgOiZtxY7A5HbRghGzX0ZmJ7pa7FS-lnvQ5ZfsnpXIg487zBXRkAnng2nHdpXtI-_GBJnZ-BotkYknpq6wJqMT8B6w2nQzcpRO-iQhF3z3wjxMYJvPEN5E5ofZDvwGiEguxFYkJdYB5oTV7ylPOJi8XPT8XTjxVi7niZmInp8gKBbkWRLTRSaRMwNlByX2BVsr5f-tqtWTVfF2_J1TND9rYm-rUoq0Cr2qmxKJEdC1VwTVFAMPSbStepdbFBo80FYZ7Wg4XwZnreKdeUBVJcaN8QENOZOv73ZlH-S7cbYzCzBDbFTx-AwhQUC5rE2vgN7lqnQ9IzlmAKJAhk7GdhrCB-fulMdU9-cHaEFpNoJ4TonNhe_B0jGeyEc=w693-h1461-no" alt="SimplePieChart" height="480" />
 
 ## Requirements
 
@@ -19,7 +19,7 @@ SimplePieChart is an Android module aims to easily create pie or donut charts
         }
     }
     dependencies{
-        compile 'com.b1project.SimplePieChart:simplepiechart:1.1.0'
+        compile 'com.b1project.SimplePieChart:simplepiechart:1.1.1'
     }
 
 ## License
