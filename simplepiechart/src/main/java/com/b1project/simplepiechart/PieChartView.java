@@ -230,6 +230,7 @@ public class PieChartView extends View {
                 if (tex != null) {
                     BitmapShader textureShader = new BitmapShader(tex, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
                     mBgPaint.setShader(textureShader);
+
                     mBgPaint.setColorFilter(new LightingColorFilter(0x00FFFFFF, item.getColor()));
                 } else {
                     mBgPaint.setColorFilter(null);
@@ -239,6 +240,13 @@ public class PieChartView extends View {
                 srcCanvas.drawArc(mOvals, mStart, mSweep, true, mBgPaint);
                 Log.d(TAG, "item: " + item.getLabel());
                 Log.d(TAG, "arc angle: " + (mStart + mSweep));
+                if (tex != null) {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(90);
+                    Bitmap rotatedTex = Bitmap.createBitmap(tex, 0, 0, tex.getWidth(), tex.getHeight(), matrix, true);
+                    BitmapShader textureShader = new BitmapShader(rotatedTex, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+                    mBgPaint.setShader(textureShader);
+                }
                 if (mStart + mSweep >= 0 && (mStart + mSweep <= 180 || mStart < 180)) {
                     Log.d(TAG, "outer depth");
                     int s_x = (int) (mOvals.centerX() + (mWidth / 2 - mGapRight) * Math.cos((mStart + mSweep) * Math.PI / 180));
